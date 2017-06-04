@@ -30,15 +30,15 @@ Here, and in the documentation, cclass and class are used interchangeably.
 A cclass consists of the following:
 - A class descriptor. It's the same for all classes. Gets defined in each class source file.
 - A pointer to the class descriptor. Also gets defined in the class source, but declared as extern in the class header.
-This pointer shall be named _ccls<name of the class>, and shall be passed to ccls_new().
+This pointer shall be named _ccls< name of the class >, and shall be passed to ccls_new().
 - The class body - a struct containing a pointer to a class descriptor as it's first member and everything else after.
-- A typedef of a pointer to this struct named in the format cci<name of the class>.
+- A typedef of a pointer to this struct named in the format cci< name of the class >.
 
 3. Mechanism
 
 To use a cclass you have to first initialize it with ccls_new(). This happens like so:
 
-cciMyClass my_class_instance = ccls_new(_cclsMyClass, <pointer to optional arguments>);
+cciMyClass my_class_instance = ccls_new(_cclsMyClass, < pointer to optional arguments >);
 
 When you are done, you have to destroy the class with ccls_delete():
 
