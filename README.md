@@ -18,7 +18,7 @@ cclass.c and err.c. You can get all the details from the provided example. Below
 
 To keep things ordered I've decided on the following: 
 
-- A class built and used by this method shall be called a C class (what can I say, I got a wild imagtination)
+- A class built and used by this method shall be called a C class (what can I say, I got a wild imagination)
 - cclass stands for "C class"
 - ccls also stands for "C class"
 - cci stands for "C class instance"
