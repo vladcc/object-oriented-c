@@ -49,4 +49,4 @@ and exit() will be called with EXIT_FAILURE. This is done by calling equit() fro
 equit() takes a formatted string (just like prinf()) as an argument and prints it to stderr, prefixing it with "Err: ", so
 feel free to use it if you want that functionality.
 
-That's it. The whole wide world of OOP is now in your hands (well, the most important parts of it, at least).
+That's it. The whole wide world of OOP is now in your hands (well, the most important parts of it, at least)
