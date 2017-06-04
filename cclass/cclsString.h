@@ -4,6 +4,7 @@ As per the naming convention, cciString stands for "C class instance String" and
 _cclsString stands for "C class String". cciString receives the result of ccls_new(), while
 _cclsString is passed to ccls_new().
 */
+/* v0.1 */
 #ifndef CCLSSTRING_H
 #define CCLSSTRING_H
 

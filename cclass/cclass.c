@@ -1,4 +1,5 @@
 /* cclass.c -- Base for OOP in plain C */
+/* v1.0 */
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

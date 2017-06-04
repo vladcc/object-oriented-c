@@ -1,4 +1,5 @@
 /* err.h -- common error checking */
+/* v1.0 */
 #ifndef ERR_H
 #define ERR_H
 

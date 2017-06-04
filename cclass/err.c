@@ -1,4 +1,5 @@
 /* err.c -- common error checking */
+/* v1.0 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

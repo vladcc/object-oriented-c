@@ -1,4 +1,5 @@
 /* cclass.h -- an interface allowing OOP in plain C */
+/* v1.0 */
 #ifndef CCLASS_H
 #define CCLASS_H
 
