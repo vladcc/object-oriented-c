@@ -52,10 +52,10 @@ struct and put a void * to that struct in the class. But then you will have to d
 Before I get into details, if you want to jump right in the code here are the make commands:
 
 make compile_tests	- will compile all test cases for you.
-make tests 			- runs the tests back to back; compiles them first if they aren't already compiled
+make tests 		- runs the tests back to back; compiles them first if they aren't already compiled
 make clean_obj		- removes the object files
 make clean_bin		- removes the executable files
-make clean			- removes the object files and the executables
+make clean		- removes the object files and the executables
 
 First you should probably get familiar with the conveniton from point 3, though.
 
@@ -82,8 +82,8 @@ How do we go about creating classes in C? We use structs with variables for data
 for methods. Duh, right. You've probably guessed that already. Also, though, we take full advantage of the fact that:
 
 #define struct_members	int a;\
-						int b;\
-						void (*my_method)(void)
+			int b;\
+			void (*my_method)(void)
 						
 struct my_struct {
 	struct_members;
@@ -176,15 +176,15 @@ An example of class named MyClass which has an int, a double, and a function poi
 Header:
 
 #define cclsMyClass_args	int n;\
-							double d
+				double d
 							
 typedef struct cclsMyClass_init {
 	cclsMyClass_args;
 } cclsMyClass_init;
 
 #define cclsMyClass_base	int n;\
-							double d;\
-							void (*foo)(void)
+				double d;\
+				void (*foo)(void)
 							
 typedef struct cclsMyClass_class {
 	Cclass * descriptor;
@@ -273,7 +273,7 @@ You have your virtual animal class and now you want a class for kitties. Since a
 from cclsAnimal. The code looks like this:
 
 #define cclsCat_base	cclsAnimal_base;\
-						<cat members here>
+			<cat members here>
 						
 typedef struct cclsCat_class {
 	Cclass * cat_descriptor;
@@ -312,9 +312,9 @@ you set on to creating a cclsManBearPug which inherits from cclsMan, cclsBear, a
 nesting class bases and you get:
 
 #define cclsManBearPug_base	cclsMan_base;\
-							cclsBeart_base;\
-							cclsPug_base;\
-							<ManBearPug members>
+				cclsBeart_base;\
+				cclsPug_base;\
+				<ManBearPug members>
 
 typedef struct cclsManBearPug_class {
 	Cclass * cclass;
