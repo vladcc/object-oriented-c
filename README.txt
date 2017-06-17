@@ -433,8 +433,8 @@ cclsSquid_diamond_dtor()
 We also do not delcare them as static functions, because we want to put their declarations in the cclsShark and cclsSquid header files, 
 so we can use them in cclsSharkSquid. That's it. We also get a bonus - what we have done self-documents in the code.
 
-Also, here we have some polymorphism. A shark pointer and a squid pointer won't point to valid objects if pointed to a sharksquid instance,
-but a pointer to a cclsAnimal_class will.
+Also, here we have some polymorphism. A shark pointer and a squid pointer won't point to valid objects if pointed to a sharksquid 
+instance, but a pointer to a cclsAnimal_class will.
 
 A working example of this is diamond_inheritance.c which uses cclsShark, cclsSquid, and cclsSharkSquid.
 
