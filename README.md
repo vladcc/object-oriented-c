@@ -74,7 +74,7 @@ From here on I talk about all the nerdy details. Here's a brief content:
 11. Allocation
 12. Conclusion
 
-
+------------------------------------------------
 
 1. General ideas
 
