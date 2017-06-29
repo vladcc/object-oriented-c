@@ -81,10 +81,10 @@ If you don't know what that rule is, you are a happier person.
 If you do know what that rule is, you are gathering a mob and getting your pitchforks ready
 right about now. Far be it for me to inconvenience you and your friends by letting you waste a trip, 
 I'm lettinig you know that the breaking of this rule is not a big deal. Seriously. It's important only 
-when compiling with high level optimization on. Also there are commercial compilers that don't even support it.
-In any case, if you are compiling with optimization on, compile with the -fno-strict-aliasing 
-flag or an equivalent for your compiler. Also, make sure that the strict aliasing is off when you expect it to be. 
-That is, by default.
+when compiling with high level optimization on. Also there are commercial compilers that don't even 
+support it. In any case, if you are compiling with optimization on, compile with the -fno-strict-aliasing 
+flag or an equivalent for your compiler. Also, make sure that the strict aliasing is off when you 
+expect it to be. That is, by default.
 
 
 1. General ideas
