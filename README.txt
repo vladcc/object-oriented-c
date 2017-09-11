@@ -4,7 +4,7 @@ Why? Because we can.
 "But Vlad, why would you write in C in 2017? C is not object oriented and bla bla bla boo hoo"
 
 If you love to write in C, you have probably heard something like the above. I'm here to tell you that
-you can, indeed, write object oriented code in C with all its bells and whistles. So now you can respond with 
+you can, indeed, write object oriented code in C with all its bells and whistles. So now you can respond with
 "Pft! I can write C to be object oriented. We C programmers are cool like that."
 
 Joking aside, some time ago a got really curious about how to do OOP in plain C. I found some examples
@@ -12,14 +12,14 @@ on the web, but nothing simple and complete. So I decided to write my own framew
 how to write OOP in C using nothing but the compiler and the preprocessor. To my surprise, it turned out to be
 pretty simple.
 
-First I have to mention it's based on ideas from Axel Schreiner's "Object-oriented Programming in ANSI-C", 
+First I have to mention it's based on ideas from Axel Schreiner's "Object-oriented Programming in ANSI-C",
 which he is so kind to provide for free here: https://www.cs.rit.edu/~ats/books/ooc.pdf It's a great read
 for anyone interested.
 
 !!!IMPORTANT CAVEATS!!!
 Everything said and done here is for educational purposes only!
-The method described below is a dirty, dirty hack (according to the standard, at least)
-Using structures like we will is undefined behavior. It should work, and it will work, 
+The method described below is a dirty, dirty hack according to the standard.
+Using structures like we will is undefined behavior. It should work, and it will work,
 because all kinds of technology depend on what we are (ab)using to hold true. It is still
 undefined behavior nonetheless.
 
@@ -31,11 +31,11 @@ https://stackoverflow.com/questions/16214268/what-is-there-to-be-gained-by-deter
 
 https://en.wikipedia.org/wiki/Data_structure_alignment
 
-To add insult to injury, it also violates the C standard strict aliasing rule.
+To add insult to injury(go ahead - judge me), it also violates the C standard strict aliasing rule.
 If you don't know what that rule is, you are a happier person.
 If you do know what that rule is, I'm letting you know that breaking it is far less of a big deal.
-It's important only when compiling with high level optimization on. Also, there are commercial compilers 
-that don't even support it. In any case, if you dare to compile, and if you are compiling with optimization on, 
+It's important only when compiling with high level optimization on. Also, there are commercial compilers
+that don't even support it. In any case, if you dare to compile, and if you are compiling with optimization on,
 compile with the -fno-strict-aliasing flag(for GCC) or an equivalent for your compiler.
 
 For more info:
@@ -57,24 +57,24 @@ Pros:
 - Virtual methods
 - Control over how your classes behave
 - Control over where they get allocated
-- Very little work upfront
+- Little work upfront
 
-* The diamond problem is a multiple inheritance problem, but here we distinguish between both as 
-multiple inheritance and diamond inheritance present different quirks. 
+* The diamond problem is a multiple inheritance problem, but here we distinguish between both as
+multiple inheritance and diamond inheritance present different quirks.
 
 Cons:
 - Work upfront
-- Having to pass the 'this' pointer manually
+- Having to pass the 'this' pointer manually is a pain in the ass
 - You can't have members with the same names in the derived class and the ones you inherit from
 - Manual handling of function pointers
-- Having to constantly look up initializer lists
+- Having to constantly look up initializer lists is also a pain in the ass
 - No polymorphism in multiple inheritance; only a pointer to the derived class points to a valid object
 - Restricted polymorphism in diamond inheritance; only pointers to the base class and the derived class point
 to valid objects
 - (even more)Hackery required to do multiple and diamond inheritance
 
 A word on encapsulation: no encapsulation is used. Every member/function pointer is public. It is left to the
-programmer to follow good practice. You can encapsulate, for examples, if you wrap all private members in a 
+programmer to follow good practice. You can encapsulate, for examples, if you wrap all private members in a
 struct and put a void * to that struct in the class. But then you will have to deal with that.
 
 Before I get into details, if you want to jump right in the code here are the make commands:
@@ -111,7 +111,7 @@ for methods. Duh, right. You've probably guessed that already. Also, though, we 
 #define struct_members	int a;\
 			int b;\
 			void (*my_method)(void)
-						
+
 struct my_struct {
 	struct_members;
 };
@@ -152,7 +152,7 @@ The general mechanism of how instance initialization is going to happen is the f
 5. Voila
 
 The constructor will take the address of the object and a list of its arguments, initialize the data members and function
-pointers, and perform any additional tasks such as memory allocation. Destroying the object will be done by calling a function 
+pointers, and perform any additional tasks such as memory allocation. Destroying the object will be done by calling a function
 which takes the object pointer and calls its destructor.
 
 Now we have a general way of creating/destroying objects. Let's define a helpful convention and we're on our way.
@@ -204,7 +204,7 @@ Header:
 
 #define cclsMyClass_args	int n;\
 				double d
-							
+
 typedef struct cclsMyClass_init {
 	cclsMyClass_args;
 } cclsMyClass_init;
@@ -212,7 +212,7 @@ typedef struct cclsMyClass_init {
 #define cclsMyClass_base	int n;\
 				double d;\
 				void (*foo)(void)
-							
+
 typedef struct cclsMyClass_class {
 	Cclass * descriptor;
 	cclsMyClass_base;
@@ -242,7 +242,7 @@ const Cclass * cclsMyClass = &cclsMyClass_descriptor;
 
 The cclass file provides the functionality for dynamically creating/destroying objects.
 You can allocate the object on the heap with ccls_new(), or on the stack with the macro ccls_stack_new().
-Destroying objects is done with ccls_delete() and ccls_stack_delete() respectively. ccls_delete_null() is like 
+Destroying objects is done with ccls_delete() and ccls_stack_delete() respectively. ccls_delete_null() is like
 ccls_delete() but also NULLs the pointer you pass to it, so it's preferred in the main program. ccls_stack_delete()
 NULLs it's pointer as well.
 
@@ -269,7 +269,7 @@ putting the string pointer inside, and then pass the struct.
 
 6. Virtual base classes
 
-We start the more involved examples with this because it's really simple and almost all of the other examples inherit 
+We start the more involved examples with this because it's really simple and almost all of the other examples inherit
 from a virtual base. We said that the usual class declaration looks like this:
 
 typedef struct cclsMyClass_class {
@@ -286,7 +286,7 @@ typedef struct cclsMyVirtualClass_class {
 	cclsMyVirtualClass_base;
 } cclsMyVirtualClass_class;
 
-Now you can't declare an instance with cciMyVirtualClass (the compiler won't let you), but you can declare 
+Now you can't declare an instance with cciMyVirtualClass (the compiler won't let you), but you can declare
 a pointer to one the usual way - cclsMyVirtualClass_class *
 
 The virtual base class in our examples is the cclsAnimal.
@@ -295,30 +295,30 @@ The virtual base class in our examples is the cclsAnimal.
 
 7. Hierarchical inheritance and polymorphism
 
-How do we do hierarchical inheritance and polymorphism? Let's say you are making a game about petting animals. 
+How do we do hierarchical inheritance and polymorphism? Let's say you are making a game about petting animals.
 You have your virtual animal class and now you want a class for kitties. Since a kitty is an animal, it inherits
 from cclsAnimal. The code looks like this:
 
 #define cclsCat_base	cclsAnimal_base;\
 			<cat members here>
-						
+
 typedef struct cclsCat_class {
 	Cclass * cat_descriptor;
 	cclsCat_base;
 } cclsCat_class, * cciCat;
 
-Then in the cat constructor and destructor you call the animal constructor and destructor using the this pointer. 
-This will work, because the animal class members are contained in the upper part of the cat class. This way when you have 
+Then in the cat constructor and destructor you call the animal constructor and destructor using the this pointer.
+This will work, because the animal class members are contained in the upper part of the cat class. This way when you have
 an animal class pointer point to a cat instance, the animal class pointer will be pointing a valid animal class object,
-but with a cat class descriptor, hence the proper constructor/destructor will be called. This is what allows for 
-polymorphism and this is also the reason why you can't have members with the same names in cclsAnimal and in 
+but with a cat class descriptor, hence the proper constructor/destructor will be called. This is what allows for
+polymorphism and this is also the reason why you can't have members with the same names in cclsAnimal and in
 cclsCat (the compiler won't let you, anyway)
 
 You can do this type of inheritance with as many classes as you wish. If you have a class C, which is derived from
 a class B, which is derived from a class A, then C's constructor will call B's constructor, which will call A's constructor.
 Turtles all the way down as much as you need. Same goes for the destructors.
 
-simple_inheritance.c demonstrates single inheritance and polymorphism using cclsAnimal and cclsCat. hierarchy_inheritance.c 
+simple_inheritance.c demonstrates single inheritance and polymorphism using cclsAnimal and cclsCat. hierarchy_inheritance.c
 demonstrates a hierarchy of more than two classes and also has an example of virtual methods, which we will talk about later.
 
 
@@ -349,17 +349,17 @@ typedef struct cclsManBearPug_class {
 } cclsManBearPug_class, * cciManBearPug;
 
 Aaand you run into a problem. With this setup you can call the ManBearPug constructor, but how do you construct the Man, the Bear,
-and the Pug inside the ManBearPug? One option is to initialize their members manually, but that, except being error prone, 
-defeats the whole purpose of the OO design. When we call the ManBearPug constructor we want it to call the Man, the Bear, and the Pug 
+and the Pug inside the ManBearPug? One option is to initialize their members manually, but that, except being error prone,
+defeats the whole purpose of the OO design. When we call the ManBearPug constructor we want it to call the Man, the Bear, and the Pug
 constructors for us. But how do we do that?
 
-We can't do it by nesting the constructors inside each other the way we did for hierarchical inheritance, because these three classes 
+We can't do it by nesting the constructors inside each other the way we did for hierarchical inheritance, because these three classes
 are not derived from one another. We can call each constructor separately, but for this we would need the individual starting addresses
-for each of the classes inside the derived class. We can't have these addresses, because with this set up there are no individual 
+for each of the classes inside the derived class. We can't have these addresses, because with this set up there are no individual
 classes inside the derived class - all members get mixed together as a bunch of variables and function pointers.
 
-So what do we do? Do we just give up finding comfort in the thought that there are big, fancy OOP languages that don't have multiple 
-inheritance, so we are no worse than them? Of course not. We are C programmers. We write what we want, and goddamit, we want multiple 
+So what do we do? Do we just give up finding comfort in the thought that there are big, fancy OOP languages that don't have multiple
+inheritance, so we are no worse than them? Of course not. We are C programmers. We write what we want, and goddamit, we want multiple
 inheritance because we should be able to do it!
 
 And, sure enough, we can achieve it with just a little bit of hacking. First we need to transform the ManBearPug class from the above
@@ -387,7 +387,7 @@ And the byte type is this:
 typedef unsigned char byte;
 
 So what we have done is we have separated the bases of the classes with byte pointers. But why? Because now we can use these pointers
-to trick the computer into thinking that they are pointing to valid class objects. This will allow us to call their constructors. 
+to trick the computer into thinking that they are pointing to valid class objects. This will allow us to call their constructors.
 Yes! Pointer magic! Looks like this:
 
 this->this_Man = ccls_mult_offset(this->this_Man);
@@ -412,7 +412,7 @@ the bear, the pug, and the manbearpug are inside cclsManBearPug.
 
 "Ok, great, everything up to here is fine and dandy", you say, "But what if I was writing a game about a marine biologist who
 discovers a new breed of animal, which is actually a cross of two other breeds? Then we should be able to treat the newly discovered
-breed as an animal like any other, correct?" 
+breed as an animal like any other, correct?"
 
 And correct you are. Also, we can. The problem is similar to the previous one. Here's what we do: let's say your marine biologist
 discovers a SharkSquid breed, which is a combination of (what else?) a shark and a squid. The shark will be inheriting from the animal
@@ -421,7 +421,7 @@ class, the squid will be inheriting from the animal class, and the sharksquid wi
 You can represent this like so:
 
 #define cclsSharkSquid_base	<SharkSquid members>
-						
+
 typedef struct cclsSharkSquid_class {
 	Cclass * cclass;
 	cclsAnimal_base;
@@ -434,7 +434,7 @@ typedef struct cclsSharkSquid_class {
 
 You put the base class first, then separate the bases for all the other classes. Just like multiple inheritance, but with a base class.
 Here, however, instead of mp_type we have a dp_type. What does dp_type stand for, you may ask? Well, "diamond pointer type", of course!
-It's also just another name for a byte pointer. The reason for it's existence is readability. However, to take the address of an 
+It's also just another name for a byte pointer. The reason for it's existence is readability. However, to take the address of an
 internal derived class now we have to take into an account the base class. So we do it like this:
 
 this->this_Shark = ccls_diamond_offset(this->this_Shark, cclsAnimal);
@@ -443,11 +443,11 @@ this->this_Squid = ccls_diamond_offset(this->this_Squid, cclsAnimal);
 ccls_diamond_offset() is again a macro declared in cclass.h and it's job is to get the proper offset inside the derived class.
 
 But there's one more thing. We can't just pass this->this_Shark and this->this_Squid to their respective constructors, because this way
-the Shark will call it's base class constructor, and the Squid will also call it's base class constructor, as they both inherit from 
-cclsAnimal. In this case though, we don't want them to have a base class instances. They also physically don't. There's no 
-cclsAnimal_base above cclsShark or cclsSquid. The same goes for calling the destructors. What's the solution to this? 
-Nothing fancy - we write a constructor and a destructor for cclsShark and cclsSquid which do not call the cclsAnimal 
-constructor/destructor. We use the convention and name them 
+the Shark will call it's base class constructor, and the Squid will also call it's base class constructor, as they both inherit from
+cclsAnimal. In this case though, we don't want them to have a base class instances. They also physically don't. There's no
+cclsAnimal_base above cclsShark or cclsSquid. The same goes for calling the destructors. What's the solution to this?
+Nothing fancy - we write a constructor and a destructor for cclsShark and cclsSquid which do not call the cclsAnimal
+constructor/destructor. We use the convention and name them
 
 cclsShark_diamond_ctor()
 cclsShark_diamond_dtor()
@@ -457,10 +457,10 @@ and
 cclsSquid_diamond_ctor()
 cclsSquid_diamond_dtor()
 
-We also do not declare them as static functions, because we want to put their declarations in the cclsShark and cclsSquid header files, 
+We also do not declare them as static functions, because we want to put their declarations in the cclsShark and cclsSquid header files,
 so we can use them in cclsSharkSquid. That's it. We also get a bonus - what we have done self-documents in the code.
 
-Also, here we have some polymorphism. A shark pointer and a squid pointer won't point to valid objects if pointed to a sharksquid 
+Also, here we have some polymorphism. A shark pointer and a squid pointer won't point to valid objects if pointed to a sharksquid
 instance, but a pointer to a cclsAnimal_class will.
 
 A working example of this is diamond_inheritance.c which uses cclsShark, cclsSquid, and cclsSharkSquid.
@@ -494,13 +494,13 @@ classes you'd need getter methods. Even though this should work, I haven't done 
 
 10. Virtual methods
 
-I saved this one for last, because it's actually the easiest and we can mention it in passing. 
+I saved this one for last, because it's actually the easiest and we can mention it in passing.
 Overriding a method from a child class is easy - all you need to do is swap the function pointer. If you want to
 use the method from the child class in the derived class, you remember it. There's an example of this in hierarchy_inheritance.c,
 which uses cclsAnimal, cclsCat, and cclsSwatCat. If you are wondering, a swat cat is just like a regular cat, but it is a member
-of a swat team and fights crime in a jet fighter. 
+of a swat team and fights crime in a jet fighter.
 
-One good thing about having your classes in different files is that when you declare your functions as static, you can use the 
+One good thing about having your classes in different files is that when you declare your functions as static, you can use the
 same function names in more than one file. Helps with documenting what you override.
 
 
@@ -508,8 +508,8 @@ same function names in more than one file. Helps with documenting what you overr
 11. Allocation
 
 Be default ccls_new() allocates your object on the heap using malloc() (emalloc(), to be precise) You can have your objects allocated
-on the stack by using the ccls_stack_new() macro. If you use it though, you must use ccls_stack_delete() to destroy the same objects. 
-The difference between ccls_delete() and ccls_stack_delete() is that ccls_stack_delete() doesn't call free(), since you are using 
+on the stack by using the ccls_stack_new() macro. If you use it though, you must use ccls_stack_delete() to destroy the same objects.
+The difference between ccls_delete() and ccls_stack_delete() is that ccls_stack_delete() doesn't call free(), since you are using
 stack memory.
 
 ccls_stack_new() makes use of the C99 compound literals. Also note that ccls_stack_new() takes an already declared cci as an argument.
@@ -532,9 +532,9 @@ There's an example of stack allocation in stack_allocation.c which uses cclsStri
 
 12. Conclusion
 
-Well, that's it. That's my (standard violating)take on how you can do OOP in C. You also get a good exercise in pointers. 
+Well, that's it. That's my (standard violating)take on how you can do OOP in C. You also get a good exercise in pointers.
 A couple of things I should mention are copy constructing and variable length stack arrays. You can copy construct either
-by making an initializer by getting the members of the class you want to copy, or by having a separate method you'd call after 
+by making an initializer by getting the members of the class you want to copy, or by having a separate method you'd call after
 creating your instance. e.g.
 
 ...
