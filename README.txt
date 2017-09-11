@@ -16,7 +16,35 @@ First I have to mention it's based on ideas from Axel Schreiner's "Object-orient
 which he is so kind to provide for free here: https://www.cs.rit.edu/~ats/books/ooc.pdf It's a great read
 for anyone interested.
 
-Before we begin, let's look at the pros and cons:
+!!!IMPORTANT CAVEATS!!!
+Everything said and done here is for educational purposes only!
+The method described below is a dirty, dirty hack (according to the standard, at least)
+Using structures like we will is undefined behavior. It should work, and it will work, 
+because all kinds of technology depend on what we are (ab)using to hold true. It is still
+undefined behavior nonetheless.
+
+For more info:
+
+https://stackoverflow.com/questions/44485168/is-struct-packing-deterministic
+
+https://stackoverflow.com/questions/16214268/what-is-there-to-be-gained-by-deterministic-field-ordering-in-the-memory-layout
+
+https://en.wikipedia.org/wiki/Data_structure_alignment
+
+To add insult to injury, it also violates the C standard strict aliasing rule.
+If you don't know what that rule is, you are a happier person.
+If you do know what that rule is, I'm letting you know that breaking it is far less of a big deal.
+It's important only when compiling with high level optimization on. Also, there are commercial compilers 
+that don't even support it. In any case, if you dare to compile, and if you are compiling with optimization on, 
+compile with the -fno-strict-aliasing flag(for GCC) or an equivalent for your compiler.
+
+For more info:
+
+https://stackoverflow.com/questions/98650/what-is-the-strict-aliasing-rule
+
+
+Now, let's pretend to forget about the caveats above(blasphemy, I know)
+and take a look at the pros and cons:
 
 Pros:
 - C speed
@@ -27,8 +55,8 @@ Pros:
 - Diamond inheritance*
 - Virtual base classes
 - Virtual methods
-- Full control over how your classes behave
-- Full control over where they get allocated
+- Control over how your classes behave
+- Control over where they get allocated
 - Very little work upfront
 
 * The diamond problem is a multiple inheritance problem, but here we distinguish between both as 
@@ -43,7 +71,7 @@ Cons:
 - No polymorphism in multiple inheritance; only a pointer to the derived class points to a valid object
 - Restricted polymorphism in diamond inheritance; only pointers to the base class and the derived class point
 to valid objects
-- Hackery required to do multiple and diamond inheritance
+- (even more)Hackery required to do multiple and diamond inheritance
 
 A word on encapsulation: no encapsulation is used. Every member/function pointer is public. It is left to the
 programmer to follow good practice. You can encapsulate, for examples, if you wrap all private members in a 
@@ -57,13 +85,13 @@ make clean_obj		- removes the object files
 make clean_bin		- removes the executable files
 make clean		- removes the object files and the executables
 
-First you should probably get familiar with the conveniton from point 3, though.
+First you should probably get familiar with the convention from point 3, though.
 
 From here on I talk about all the nerdy details. Here's a brief content:
 
 1. General ideas
 2. Mechanism
-3. The convetion
+3. The convention
 4. cclass.c/cclass.h and err.c/err.h
 5. Instance example
 6. Virtual base classes
@@ -73,18 +101,6 @@ From here on I talk about all the nerdy details. Here's a brief content:
 10. Virtual methods
 11. Allocation
 12. Conclusion
-
-
-!!!IMPORTANT CAVEAT!!!
-The method described below violates the C standard strict aliasing rule.
-If you don't know what that rule is, you are a happier person.
-If you do know what that rule is, you are gathering a mob and getting your pitchforks ready
-right about now. Far be it for me to inconvenience you and your friends by letting you waste a trip, 
-I'm lettinig you know that the breaking of this rule is not a big deal. Seriously. It's important only 
-when compiling with high level optimization on. Also there are commercial compilers that don't even 
-support it. In any case, if you are compiling with optimization on, compile with the -fno-strict-aliasing 
-flag or an equivalent for your compiler. Also, make sure that the strict aliasing is off when you 
-expect it to be. That is, by default.
 
 
 1. General ideas
@@ -143,7 +159,7 @@ Now we have a general way of creating/destroying objects. Let's define a helpful
 
 
 
-3. The convetion
+3. The convention
 
 3.1. Naming:
 - A class created with this method is called a "C class" (what can I say, I got a wild imagination)
@@ -270,7 +286,7 @@ typedef struct cclsMyVirtualClass_class {
 	cclsMyVirtualClass_base;
 } cclsMyVirtualClass_class;
 
-Now you can't delcare an instance with cciMyVirtualClass (the compiler won't let you), but you can declare 
+Now you can't declare an instance with cciMyVirtualClass (the compiler won't let you), but you can declare 
 a pointer to one the usual way - cclsMyVirtualClass_class *
 
 The virtual base class in our examples is the cclsAnimal.
@@ -378,7 +394,7 @@ this->this_Man = ccls_mult_offset(this->this_Man);
 this->this_Bear = ccls_mult_offset(this->this_Bear);
 this->this_Pug = ccls_mult_offset(this->this_Pug);
 
-ccls_mult_offset() is a macro delcared in cclass.h and it's job is to get the proper offest inside the derived class.
+ccls_mult_offset() is a macro declared in cclass.h and it's job is to get the proper offset inside the derived class.
 
 Now we can pass this->this_Man to the cclsMan constructor. Similar for the bear and the pug. This way we can use the three classes
 internally in cclsManBearPug. This is not without it's downsides, though, because we just lost the polymorphism. A pointer to cclsMan
@@ -418,13 +434,13 @@ typedef struct cclsSharkSquid_class {
 
 You put the base class first, then separate the bases for all the other classes. Just like multiple inheritance, but with a base class.
 Here, however, instead of mp_type we have a dp_type. What does dp_type stand for, you may ask? Well, "diamond pointer type", of course!
-It's also just another name for a byte pointer. The reason for it's existance is readability. However, to take the address of an 
+It's also just another name for a byte pointer. The reason for it's existence is readability. However, to take the address of an 
 internal derived class now we have to take into an account the base class. So we do it like this:
 
 this->this_Shark = ccls_diamond_offset(this->this_Shark, cclsAnimal);
 this->this_Squid = ccls_diamond_offset(this->this_Squid, cclsAnimal);
 
-ccls_diamond_offset() is again a macro delcared in cclass.h and it's job is to get the proper offest inside the derived class.
+ccls_diamond_offset() is again a macro declared in cclass.h and it's job is to get the proper offset inside the derived class.
 
 But there's one more thing. We can't just pass this->this_Shark and this->this_Squid to their respective constructors, because this way
 the Shark will call it's base class constructor, and the Squid will also call it's base class constructor, as they both inherit from 
@@ -441,7 +457,7 @@ and
 cclsSquid_diamond_ctor()
 cclsSquid_diamond_dtor()
 
-We also do not delcare them as static functions, because we want to put their declarations in the cclsShark and cclsSquid header files, 
+We also do not declare them as static functions, because we want to put their declarations in the cclsShark and cclsSquid header files, 
 so we can use them in cclsSharkSquid. That's it. We also get a bonus - what we have done self-documents in the code.
 
 Also, here we have some polymorphism. A shark pointer and a squid pointer won't point to valid objects if pointed to a sharksquid 
@@ -484,7 +500,7 @@ use the method from the child class in the derived class, you remember it. There
 which uses cclsAnimal, cclsCat, and cclsSwatCat. If you are wondering, a swat cat is just like a regular cat, but it is a member
 of a swat team and fights crime in a jet fighter. 
 
-One good thing about having your classes in different files is that when you delcare your functions as static, you can use the 
+One good thing about having your classes in different files is that when you declare your functions as static, you can use the 
 same function names in more than one file. Helps with documenting what you override.
 
 
@@ -516,8 +532,8 @@ There's an example of stack allocation in stack_allocation.c which uses cclsStri
 
 12. Conclusion
 
-Well, that's it. That's my take on how you can go about doing OOP in C. You also get good a exercise in pointers. 
-A couple of thigs I should mention are copy constructing and variable length stack arrays. You can copy construct either 
+Well, that's it. That's my (standard violating)take on how you can do OOP in C. You also get a good exercise in pointers. 
+A couple of things I should mention are copy constructing and variable length stack arrays. You can copy construct either
 by making an initializer by getting the members of the class you want to copy, or by having a separate method you'd call after 
 creating your instance. e.g.
 
