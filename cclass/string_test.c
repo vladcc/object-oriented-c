@@ -10,7 +10,7 @@
 							   
 int main(void)
 {
-	cciString strcls_test = ccls_new(cclsString, "Q: What did one snowman said to the other?");
+	cciString strcls_test = ccls_new(cclsString, "Q: What did one snowman say to the other?");
 	
 	print_ccls_info(strcls_test);
 	
