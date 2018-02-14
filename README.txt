@@ -16,14 +16,13 @@ First I have to mention it's based on ideas from Axel Schreiner's "Object-orient
 which he is so kind to provide for free here: https://www.cs.rit.edu/~ats/books/ooc.pdf It's a great read
 for anyone interested.
 
-!!!IMPORTANT CAVEATS!!!
-Everything said and done here is for educational purposes only!
-The method described below is a dirty, dirty hack according to the standard.
-Using structures like we will is undefined behavior. It should work, and it will work,
-because all kinds of technology depend on what we are (ab)using to hold true. It is still
-undefined behavior nonetheless.
+!!!IMPORTANT!!!
+The method described below is dubious at best, according to the standard.
+As far as I know it was legal in C89, but it's not so clear how legal it is in C99 and C11 because of strict aliasing.
+Strict aliasing only matters at high levels of optimization and some compilers don't even implement it all.
+In any case, make sure you compile with the -fno-strict-aliasing flag for GCC, or an equivalent for your compiler.
 
-For more info:
+More info:
 
 https://stackoverflow.com/questions/44485168/is-struct-packing-deterministic
 
@@ -31,20 +30,10 @@ https://stackoverflow.com/questions/16214268/what-is-there-to-be-gained-by-deter
 
 https://en.wikipedia.org/wiki/Data_structure_alignment
 
-To add insult to injury(go ahead - judge me), it also violates the C standard strict aliasing rule.
-If you don't know what that rule is, you are a happier person.
-If you do know what that rule is, I'm letting you know that breaking it is far less of a big deal.
-It's important only when compiling with high level optimization on. Also, there are commercial compilers
-that don't even support it. In any case, if you dare to compile, and if you are compiling with optimization on,
-compile with the -fno-strict-aliasing flag(for GCC) or an equivalent for your compiler.
-
-For more info:
-
 https://stackoverflow.com/questions/98650/what-is-the-strict-aliasing-rule
 
 
-Now, let's pretend to forget about the caveats above(blasphemy, I know)
-and take a look at the pros and cons:
+With that said, let's look at the pros and cons:
 
 Pros:
 - C speed
