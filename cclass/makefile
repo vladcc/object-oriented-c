@@ -2,7 +2,7 @@
 
 # Compiler stuff
 CC=gcc
-CFLAGS=-Wall -fno-strict-aliasing
+CFLAGS=-Wall --fno-strict-aliasing
 
 # Environment
 RM=rm
