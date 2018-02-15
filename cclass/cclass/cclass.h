@@ -1,9 +1,10 @@
 /* cclass.h -- an interface allowing OOP in plain C */
-/* v1.1 */
+/* v1.2 */
 #ifndef CCLASS_H
 #define CCLASS_H
 
 #include <stdbool.h>
+#include "err.h"
 
 typedef unsigned char byte;
 
@@ -51,14 +52,16 @@ void * ccls_new(const void * cclass, const void * args);
 Returns: A pointer to the initialized cclass.
 
 Description: Takes a pointer to a Cclass structure and a void pointer that can be set
-to point to optional arguments for the class construtor, or be set to NULL if there aren't any.
+to point to optional arguments for the class constructor, or be set to NULL if there aren't any.
 The function sets the first field of the class (which must be a Cclass *) to point to the class descriptor,
 initializes an instance of the class by calling the class constructor, and returns a pointer to 
 the initialized instance.
 */
 
 #define ccls_stack_new(ccinst, ccls, parg)	( (ccinst) = (void *)(byte[sizeof(ccls##_class)]){0},\
-											(*(const Cclass **)(ccinst) = (ccls) ),\
+											(*(const Cclass **)(ccinst) = (ccls)),\
+											echeck_v(((ccls)->ctor), "No constructor"),\
+											echeck_v(((ccls)->dtor), "No destructor"),\
 											(ccls)->ctor((ccinst), (parg)) )
 /*
 Description: Works like ccls_new(), but allocates the instance on the stack.
@@ -71,7 +74,8 @@ Returns: Nothing.
 Description: Takes a pointer to an initialized cclass and calls the class destructor.
 */
 
-#define ccls_stack_delete(ccinst) ((*((Cclass **)(ccinst)))->dtor((ccinst)), (ccinst) = NULL)
+#define ccls_stack_delete(ccinst) (	echeck_v(((*((Cclass **)(ccinst)))->dtor), "No destructor"),\
+									(*((Cclass **)(ccinst)))->dtor((ccinst)), (ccinst) = NULL)
 /*
 Description: Destroys a class instance allocated on the stack and NULLs the pointer.
 */

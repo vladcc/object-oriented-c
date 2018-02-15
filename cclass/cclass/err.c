@@ -1,18 +1,20 @@
 /* err.c -- common error checking */
-/* v1.1 */
+/* v1.2 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include "err.h"
 
-void * emalloc(size_t nbytes)
+static char null_ptr_arg_err[] = "NULL pointer passed as argument";
+
+void * emalloc(int nbytes)
 {
 	/*	1. Call malloc().
 		2. Return malloc's result or die. */
+	echeck(nbytes > 0);
+		
 	void * memp = malloc(nbytes);
-	
-	if (NULL == memp)
-		equit("Memory allocation failed");
+	echeck_v(memp, "Memory allocation failed");
 	
 	return memp;
 }
@@ -21,10 +23,11 @@ FILE * efopen(const char * fname, const char * mode)
 {
 	/*	1. Call fopen().
 		2. Return fopen's result or die. */
+	echeck_v(fname, null_ptr_arg_err), echeck_v(mode, null_ptr_arg_err);
+	
 	FILE * fp;
 	fp = fopen (fname, mode);
-	if (NULL == fp)
-		equit("Couldn't open file < %s >", fname);
+	echeck_v(fp, "Couldn't open file < %s >", fname);
 	
 	return fp;
 }
@@ -35,7 +38,6 @@ void equit(const char * msg, ...)
 		2. Go home. */
 	va_list args;
 	va_start(args, msg);
-	fprintf(stderr, "Err: ");
 	vfprintf(stderr, msg, args);
 	va_end (args);
 	putchar('\n');
@@ -46,7 +48,7 @@ void equit(const char * msg, ...)
 
 void edebug_print(const char * msg, ...)
 {
-	/* 1. Print debug info.  */
+	/* 1. Print debug string.  */
 	va_list args;
 	va_start(args, msg);
 	vfprintf(stderr, msg, args);

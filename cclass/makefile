@@ -1,6 +1,8 @@
+# v1.1
+
 # Compiler stuff
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=-Wall -fno-strict-aliasing
 
 # Environment
 RM=rm

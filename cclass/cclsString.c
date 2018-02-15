@@ -1,5 +1,5 @@
 /* cclsString.c -- a C class example */
-/* v0.1 */
+/* v0.2 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,7 +46,7 @@ static void cclsString_ctor(void * self, const void * args)
 		this->str = '\0';
 	}
 
-	// initialze method pointers
+	// initialize method pointers
 	this->print = cclsString_print;
 	this->setTo = cclsString_setTo;
 	this->c_str = cclsString_cstr;
@@ -58,7 +58,7 @@ static void cclsString_dtor(void * self)
 {
 	/*	1. Free the string memory. */
 	cciString this = self;
-	free_null(this->str);
+	efree_null(this->str);
 	return;
 }
 
