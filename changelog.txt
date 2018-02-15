@@ -18,3 +18,6 @@ cclass.c: v1.2
 
 cclsString.c: v0.2
 - some typos fixed
+
+makefile: v1.1
+- added to CFLAGS --fno-strict-aliasing
