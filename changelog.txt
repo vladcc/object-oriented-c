@@ -1,0 +1,20 @@
+15.02.18
+err.h: v1.2
+- added 'e' in efree_null() macro
+- added echeck() and echeck_v() macros
+
+err.c: v1.2
+- emalloc() now takes an int
+- equit() doesn't print "Err: " before the error message anymore
+- echeck() and echeck_v() macros used instead of ifs
+- NULL pointer argument checks added
+
+cclass.h: v1.2
+- checks for ctor and dtor added to ccls_stack_new() and ccls_stack_delete()
+
+cclass.c: v1.2
+- checks for ctor and dtor added to ccls_new() and ccls_delete()
+- NULL pointer argument checks added
+
+cclsString.c: v0.2
+- some typos fixed

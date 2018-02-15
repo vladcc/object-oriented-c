@@ -20,7 +20,7 @@ int main(void)
 	ccls_delete_null(shark);
 	
 	new_line();
-	edebug_print("Creating an squid:\n");
+	edebug_print("Creating a squid:\n");
 	
 	cclsSquid_init squid_arg = {shark_arg.habitat, 8, 135};
 	cciSquid squid = ccls_new(cclsSquid, &squid_arg);
