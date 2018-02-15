@@ -1,3 +1,5 @@
+# v1.1
+
 # Compiler stuff
 CC=gcc
 CFLAGS=-Wall -fno-strict-aliasing
